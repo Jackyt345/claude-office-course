@@ -228,6 +228,7 @@ footer{margin-top:30px;color:var(--muted);font-size:16px}
     <div id="gem" hidden>
       <div class="keybox">
         <b>使用自己的 Gemini 免費金鑰</b>
+        <details id="gguide" style="margin:6px 0 10px"><summary style="cursor:pointer;font-weight:700;color:var(--blue)">第一次使用？看圖解步驟（約 3 分鐘）</summary><div id="gguidebody"></div></details>
         <ol style="margin:6px 0 8px;padding-left:1.3em">
           <li>用 Google 帳號登入 <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>，按「Create API key」建立金鑰並複製。</li>
           <li>貼到下方欄位，按「儲存金鑰」。金鑰只存在你這台裝置的瀏覽器，不會傳到本網站或講師。</li>
@@ -474,6 +475,58 @@ FIG.publish3 = (() => {
   return SV.svg(1000, 302, g, "圖：發布網頁的三個層級。先學層級 1，需要固定網址再學層級 2");
 })();
 
+/* ---- Gemini 金鑰申請示意圖 ---- */
+FIG.gk1 = (() => {
+  let g = SV.win(1000, 470, "aistudio.google.com", "");
+  g += SV.r(1, 47, 230, 422, "side", 0);
+  ["＋ New chat", "Library", "Build", "Dashboard", "Get API key", "Settings"].forEach((s, i) => { if (s === "Get API key") g += SV.r(12, 264, 208, 40, "hi", 6); g += SV.t(30, 100 + i * 46 + (i > 3 ? 4 : 0), s, { anchor: "start", size: 19, bold: s === "Get API key" }); });
+  g += SV.n(234, 284, 1);
+  g += SV.t(620, 170, "Google AI Studio", { size: 30, bold: true });
+  g += SV.t(620, 214, "用 Google 帳號登入後看到的首頁", { size: 19, cls: "txm" });
+  g += SV.r(380, 280, 480, 120, "drop", 12) + SV.t(620, 326, "也可以直接在網址列輸入", { size: 18, cls: "txm" }) + SV.t(620, 364, "aistudio.google.com/apikey", { size: 22, bold: true, cls: "txa" });
+  return SV.svg(1000, 472, g, "圖 G1：登入 Google AI Studio，點左側「Get API key」（示意圖，實際畫面依 Google 更新而異）");
+})();
+FIG.gk2 = (() => {
+  let g = SV.win(1000, 430, "aistudio.google.com/apikey", "");
+  g += SV.t(40, 100, "API Keys", { anchor: "start", size: 26, bold: true });
+  g += SV.r(760, 72, 200, 46, "btn", 8) + SV.t(860, 95, "Create API key", { mid: true, size: 18, cls: "txw", bold: true }) + SV.n(740, 95, 2);
+  g += miniTable(40, 150, ["Key", "Project", "Created", "Plan"], [["（第一次使用時是空的）", "", "", ""]], [360, 220, 160, 180], { size: 17, rh: 44 });
+  g += SV.t(500, 300, "第一次進來清單是空的，按右上角「Create API key」建立第一把金鑰", { size: 19 });
+  g += SV.t(500, 340, "沒有綁定帳單的專案就是免費層，不會被收費", { size: 18, cls: "txa", bold: true });
+  return SV.svg(1000, 432, g, "圖 G2：金鑰清單頁，按右上角「Create API key」（示意圖）");
+})();
+FIG.gk3 = (() => {
+  let g = SV.r(0, 0, 1000, 440, "pane", 12);
+  g += SV.r(200, 30, 600, 380, "win", 12) + SV.t(230, 76, "Create a new key", { anchor: "start", size: 23, bold: true });
+  g += SV.t(230, 124, "Name your key（金鑰名稱，自己看得懂即可）", { anchor: "start", size: 17, cls: "txm" }) + SV.r(230, 136, 540, 44, "hi", 6) + SV.t(246, 165, "課堂練習", { anchor: "start", size: 19, bold: true }) + SV.n(790, 158, 3);
+  g += SV.t(230, 214, "Choose a project（選專案；沒有就按建立新專案）", { anchor: "start", size: 17, cls: "txm" }) + SV.r(230, 226, 540, 44, "field", 6) + SV.t(246, 255, "Default Gemini Project ▾", { anchor: "start", size: 19 }) + SV.n(790, 248, 4);
+  g += SV.r(560, 330, 210, 48, "btn", 8) + SV.t(665, 354, "Create key", { mid: true, size: 19, cls: "txw", bold: true }) + SV.n(790, 354, 5);
+  g += SV.r(420, 330, 120, 48, "field", 8) + SV.t(480, 354, "Cancel", { mid: true, size: 18 });
+  return SV.svg(1000, 442, g, "圖 G3：替金鑰取名、選專案，按「Create key」。專案用預設的即可（示意圖）");
+})();
+FIG.gk4 = (() => {
+  let g = SV.r(0, 0, 1000, 400, "pane", 12);
+  g += SV.r(150, 30, 700, 340, "win", 12) + SV.t(180, 76, "API key created", { anchor: "start", size: 23, bold: true });
+  g += SV.r(180, 104, 560, 50, "field", 6) + SV.t(196, 136, "AIza••••••••••••••••••••••••••••", { anchor: "start", size: 20 });
+  g += SV.r(752, 104, 70, 50, "btn", 8) + SV.t(787, 129, "複製", { mid: true, size: 17, cls: "txw", bold: true }) + SV.n(838, 129, 6);
+  g += SV.r(180, 180, 642, 120, "badb", 10) + SV.t(200, 216, "金鑰等於你的帳號額度：", { anchor: "start", size: 19, bold: true, cls: "txr" }) + SV.t(200, 250, "不要貼進簡報、截圖、群組或共用文件", { anchor: "start", size: 18 }) + SV.t(200, 282, "外流時回到金鑰清單按垃圾桶刪除，再建一把新的", { anchor: "start", size: 18 });
+  g += SV.r(700, 314, 122, 44, "field", 8) + SV.t(761, 336, "Done", { mid: true, size: 18 });
+  return SV.svg(1000, 402, g, "圖 G4：金鑰建立完成，按複製（以 AIza 開頭的一長串文字）（示意圖）");
+})();
+FIG.gk5 = (() => {
+  let g = SV.win(1000, 470, "jackyt345.github.io/claude-office-course/#ask", "");
+  g += SV.t(40, 96, "問 AI 助教", { anchor: "start", size: 24, bold: true });
+  g += SV.r(40, 116, 920, 230, "okl", 10);
+  g += SV.t(60, 150, "Gemini API 金鑰", { anchor: "start", size: 17, cls: "txm" });
+  g += SV.r(60, 162, 560, 46, "hi", 8) + SV.t(76, 192, "在這裡貼上（Ctrl＋V）", { anchor: "start", size: 19, bold: true }) + SV.n(640, 185, 7);
+  g += SV.r(664, 162, 130, 46, "btn", 8) + SV.t(729, 185, "儲存金鑰", { mid: true, size: 18, cls: "txw", bold: true }) + SV.n(814, 185, 8);
+  g += SV.t(60, 248, "模型", { anchor: "start", size: 17, cls: "txm" }) + SV.r(110, 226, 300, 40, "field", 8) + SV.t(126, 252, "gemini-…-flash ▾", { anchor: "start", size: 18 });
+  g += SV.t(60, 310, "出現「已列出 N 個可用模型」就成功了；顯示「金鑰無效」請重新複製", { anchor: "start", size: 18, cls: "txa", bold: true });
+  g += SV.r(40, 366, 760, 70, "field", 8) + SV.t(56, 406, "輸入你的問題，例如：三家書店的退書報表怎麼合併？", { anchor: "start", size: 18, cls: "txm" });
+  g += SV.r(820, 378, 140, 46, "btn", 8) + SV.t(890, 401, "送出問題", { mid: true, size: 18, cls: "txw", bold: true }) + SV.n(980, 401, 9);
+  return SV.svg(1000, 472, g, "圖 G5：回到本網站的「問 AI 助教」，貼上金鑰、儲存、提問");
+})();
+
 const MODS = ["基本功", "Excel 串接", "瀏覽器與代 key", "連接器", "網站建置與 GitHub", "排程、成本與安全", "綜合實例"];
 
 /* ================= 課程講義 ================= */
@@ -635,6 +688,19 @@ const LESSONS = [
 <tr><td>OpenAI</td><td>目前沒有長期免費額度</td><td>新帳號採預付制，先儲值才能呼叫</td><td>已有付費需求時</td></tr>
 <tr><td>Claude</td><td>API 與訂閱分開計費，預先儲值</td><td>見上表價格；批次處理半價</td><td>正式工作與大量處理</td></tr></table>
 <p class="note">各家免費條件經常調整，以上依各官方說明頁整理，115 年 11 月 27 日查核。</p>
+<h3>申請 Gemini 免費金鑰：圖解五步驟</h3>
+<p>金鑰是一串以 AIza 開頭的文字，代表「用你的 Google 帳號額度呼叫 Gemini」。申請免費、不必綁信用卡，約 3 分鐘。</p>
+{{fig:gk1}}
+{{fig:gk2}}
+{{fig:gk3}}
+{{fig:gk4}}
+{{fig:gk5}}
+<table><tr><th>狀況</th><th>處理</th></tr>
+<tr><td>找不到「Get API key」</td><td>直接在網址列輸入 aistudio.google.com/apikey</td></tr>
+<tr><td>要求選擇國家或同意條款</td><td>選台灣、勾選同意後繼續</td></tr>
+<tr><td>顯示「金鑰無效」</td><td>多半是沒有複製完整，回到金鑰清單重新複製</td></tr>
+<tr><td>顯示「已達免費層的使用上限」</td><td>免費層有每分鐘與每日上限，稍等或隔天再用</td></tr>
+<tr><td>金鑰不小心外流</td><td>回到金鑰清單把那把金鑰刪除，再建一把新的</td></tr></table>
 <p>金鑰絕對不能寫進公開網站的程式裡。本網站「問 AI 助教」的做法是讓每位使用者貼上自己的 Gemini 免費金鑰，金鑰只存在使用者自己的瀏覽器，網站本身不含任何金鑰，花費與額度也各自計算。</p>
 {{fig:cost}}
 <h3>驗收與安全</h3>
@@ -1098,6 +1164,8 @@ const GEM = {
 };
 async function gemInit() {
   $("gem").hidden = false;
+  $("gguidebody").innerHTML = ["gk1", "gk2", "gk3", "gk4", "gk5"].map(figHTML).join("");
+  if (!GEM.key()) $("gguide").open = true;
   $("askmode").textContent = "這個網頁沒有內建 AI。貼上你自己的 Gemini 免費金鑰後就能提問，花費與額度都算在你自己的帳號。請不要輸入真實的客戶資料、帳號或密碼。";
   const sel = $("gmodel"), stat = $("gstat");
   const load = async () => {
