@@ -117,6 +117,20 @@ svg text{font-family:var(--body)}
 .msg b.who{display:block;font-size:16px;color:var(--blue)}
 .msg.u{align-self:flex-end;max-width:85%;background:var(--blue);color:#fff;border-color:var(--blue);border-top-right-radius:4px}
 .msg .fig{margin:10px 0 4px}
+.msg .ans{font-size:inherit;line-height:1.75}
+.msg .ans p{margin:6px 0}
+.msg .ans ol,.msg .ans ul{margin:6px 0;padding-left:1.4em}
+.msg .ans li{margin:4px 0;padding-left:2px}
+.msg .ans li::marker{color:var(--blue);font-weight:700}
+.msg .ans strong{color:var(--blue)}
+.msg .ans h4{margin:10px 0 4px;font-size:1em;color:var(--blue)}
+.msg .ans code{background:#fff;border:1px solid var(--line);border-radius:6px;padding:0 5px;font-size:.92em}
+.msg .ans pre{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;overflow:auto;font-size:.85em;white-space:pre-wrap}
+.msg .prompt{position:relative;margin:12px 0 4px;background:#fff;border:1px solid var(--line);border-left:5px solid var(--orange);border-radius:12px;padding:12px 14px 12px}
+.msg .prompt .plabel{display:block;font-size:.8em;font-weight:700;color:var(--orange);margin-bottom:4px}
+.msg .prompt .ptext{line-height:1.7}
+.msg .prompt .pcopy{display:block;margin:10px 0 0 auto;font:inherit;font-size:.85em;padding:6px 16px;border-radius:999px;border:1px solid var(--blue);background:var(--blue);color:#fff;cursor:pointer}
+
 .q{font-weight:700;margin:0 0 10px;font-size:21px}
 .opts{display:grid;gap:9px}
 .opt{font:inherit;font-size:19px;text-align:left;padding:11px 15px;border:2px solid var(--line);border-radius:10px;background:var(--paper);cursor:pointer;color:var(--ink);display:flex;gap:12px}
@@ -1233,11 +1247,44 @@ $("rretry").addEventListener("click", () => examStart());
 
 function drawTimeNoop(){}
 /* ---------- 問 AI 助教（只在 Claude 成品頁面中可用；GitHub 版本自動隱藏） ---------- */
-const BRIEF = "你是「Claude 辦公室實戰」課程的助教，學員是書籍出版公司主管、特別助理與不動產仲介公司秘書（兼管財務）。請用繁體中文、口語而精簡地回答，300 字以內，先給做法，再給一句可以直接複製的指令範例。課程原則：資料已是電子檔就不要再手打；資料經由連結資料夾、瀏覽器、連接器交給 Claude；指令五要素為目標、來源、格式、規則、授權；看不清楚的數字標黃不准猜；比對前先統一格式並附原始列號；代 key 先示範一筆、只存草稿、由本人送出；帳號密碼由本人輸入，網銀與付款不交給 AI；連接器讀取類可允許、寄出類每次詢問；網站分靜態（GitHub Pages）與有後台兩種，靜態網站收不到資料；公開 repository 不可放金鑰與個資；排程先手動三次再設定，對外寄送只起草；成果以數量、抽樣、追溯三層驗收。與課程無關的問題請婉拒並引導回辦公室應用。\n\n課程要點：\n" + Q.map((q) => "・" + q.w).join("\n");
+const BRIEF = "你是「Claude 辦公室實戰」課程的助教，學員是書籍出版公司主管、特別助理與不動產仲介公司秘書（兼管財務）。請用繁體中文、口語而精簡地回答，300 字以內。格式：先用一句話回答結論；接著用 2 到 4 點編號列出做法，每點一行；最後把可以直接複製的指令放在以「> 」開頭的引用區塊，一行一個要素（【目標】【來源】【格式】【規則】【授權】）。不要使用分隔線、表格或標題。課程原則：資料已是電子檔就不要再手打；資料經由連結資料夾、瀏覽器、連接器交給 Claude；指令五要素為目標、來源、格式、規則、授權；看不清楚的數字標黃不准猜；比對前先統一格式並附原始列號；代 key 先示範一筆、只存草稿、由本人送出；帳號密碼由本人輸入，網銀與付款不交給 AI；連接器讀取類可允許、寄出類每次詢問；網站分靜態（GitHub Pages）與有後台兩種，靜態網站收不到資料；公開 repository 不可放金鑰與個資；排程先手動三次再設定，對外寄送只起草；成果以數量、抽樣、追溯三層驗收。與課程無關的問題請婉拒並引導回辦公室應用。\n\n課程要點：\n" + Q.map((q) => "・" + q.w).join("\n");
 const SUGG = ["三家書店的退書報表格式都不同，要怎麼合併？", "屋主資料在 Excel，要怎麼登進物件後台？", "想做新書活動報名頁，要用 GitHub 嗎？"];
 const askState = { hist: [], busy: false, engine: null };
 SUGG.forEach((s) => { const c = el("button", "chip", s); c.type = "button"; c.addEventListener("click", () => { $("askq").value = s; $("askq").focus(); }); $("sugg").append(c); });
-function askBubble(text) { const out = el("div", "msg t"), body = el("span", null, text); out.append(el("b", "who", "AI 助教"), body); $("asklog").append(out); out.scrollIntoView({ behavior: "smooth", block: "nearest" }); return body; }
+/* 把 AI 回答的 Markdown 轉成乾淨的排版（先跳脫 HTML，避免注入） */
+function mdHTML(src) {
+  const esc = (x) => x.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const inl = (x) => esc(x).replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\*\*([^*]+?)\*\*/g, "<strong>$1</strong>").replace(/(^|[^*])\*([^*\s][^*]*?)\*(?!\*)/g, "$1<em>$2</em>");
+  const lines = String(src || "").replace(/\r/g, "").split("\n");
+  let out = "", list = null, quote = [], para = [], fence = null;
+  const flushPara = () => { if (para.length) { out += "<p>" + para.map(inl).join("<br>") + "</p>"; para = []; } };
+  const flushList = () => { if (list) { out += "</" + list + ">"; list = null; } };
+  const flushQuote = () => { if (quote.length) { out += '<div class="prompt"><span class="plabel">可直接複製的指令</span><div class="ptext">' + quote.map(inl).join("<br>") + '</div><button type="button" class="pcopy">複製</button></div>'; quote = []; } };
+  const flushAll = () => { flushPara(); flushList(); flushQuote(); };
+  for (const raw of lines) {
+    const ln = raw.trimEnd();
+    if (fence !== null) { if (/^```/.test(ln.trim())) { out += "<pre>" + esc(fence.join("\n")) + "</pre>"; fence = null; } else fence.push(raw); continue; }
+    if (/^```/.test(ln.trim())) { flushAll(); fence = []; continue; }
+    let m;
+    if (!ln.trim()) { flushPara(); flushList(); flushQuote(); continue; }
+    if (/^\s*(-{3,}|\*{3,}|_{3,})\s*$/.test(ln)) { flushAll(); continue; }
+    if ((m = ln.match(/^\s*>\s?(.*)$/))) { flushPara(); flushList(); if (m[1].trim()) quote.push(m[1].replace(/^[「"]|[」"]$/g, "")); continue; }
+    flushQuote();
+    if ((m = ln.match(/^\s*#{1,6}\s+(.*)$/))) { flushPara(); flushList(); out += "<h4>" + inl(m[1].replace(/\*\*/g, "")) + "</h4>"; continue; }
+    if ((m = ln.match(/^\s*(\d+)[.、)]\s+(.*)$/))) { flushPara(); if (list !== "ol") { flushList(); out += "<ol>"; list = "ol"; } out += "<li>" + inl(m[2]) + "</li>"; continue; }
+    if ((m = ln.match(/^\s*[-*•・]\s+(.*)$/))) { flushPara(); if (list !== "ul") { flushList(); out += "<ul>"; list = "ul"; } out += "<li>" + inl(m[1]) + "</li>"; continue; }
+    if (list && /^\s{2,}\S/.test(raw)) { out = out.replace(/<\/li>$/, "<br>" + inl(ln.trim()) + "</li>"); continue; }
+    flushList(); para.push(ln.trim());
+  }
+  if (fence !== null) out += "<pre>" + esc(fence.join("\n")) + "</pre>";
+  flushAll();
+  return out;
+}
+function renderAns(body, text) {
+  body.innerHTML = mdHTML(text);
+  body.querySelectorAll(".pcopy").forEach((b) => b.addEventListener("click", async () => { const t = b.previousElementSibling.innerText; try { await navigator.clipboard.writeText(t); b.textContent = "已複製"; } catch (e) { const r = document.createRange(); r.selectNodeContents(b.previousElementSibling); const sl = getSelection(); sl.removeAllRanges(); sl.addRange(r); b.textContent = "已選取，請按複製"; } setTimeout(() => (b.textContent = "複製"), 1800); }));
+}
+function askBubble(text) { const out = el("div", "msg t"), body = el("div", "ans", text); out.append(el("b", "who", "AI 助教"), body); $("asklog").append(out); out.scrollIntoView({ behavior: "smooth", block: "nearest" }); return body; }
 /* 自備金鑰模式（GitHub 版）：免費與付費方案 */
 const PRICE = { "claude-haiku-5-5": [0.10, 0.50], "claude-sonnet-5-5": [2, 10], "claude-opus-5-5": [4, 20] };
 const BRIEF_TOK = Math.round(BRIEF.length * 1.1);
@@ -1371,7 +1418,7 @@ $("askgo").addEventListener("click", async () => {
   askState.busy = true; $("askgo").disabled = true;
   $("asklog").append(el("div", "msg u", text)); const body = askBubble("思考中…"); $("askq").value = "";
   const msgs = [...askState.hist.slice(-6), { role: "user", content: text }];
-  try { const ans = await askState.engine(msgs, body); body.textContent = ans; askState.hist.push({ role: "user", content: text }, { role: "assistant", content: ans }); }
+  try { const ans = await askState.engine(msgs, body); renderAns(body, ans); askState.hist.push({ role: "user", content: text }, { role: "assistant", content: ans }); }
   catch (err) { body.textContent = err.message || "這次沒有成功取得回答，請再送出一次。"; }
   askState.busy = false; $("askgo").disabled = false;
 });
@@ -1380,7 +1427,7 @@ $("askgo").addEventListener("click", async () => {
   if (sample) {
     $("askmode").textContent = "這個版本由 Claude 回答。把工作上的情境打出來，助教會依本課程的做法回答。請不要輸入真實的客戶資料、帳號或密碼。";
     askState.engine = async (msgs, body) => {
-      try { const r = await sample([{ role: "user", content: BRIEF + "\n\n（以上是助教須知，以下開始是學員的提問。）" }, { role: "assistant", content: "了解，請說。" }, ...msgs], { modelTier: "default", cache: false, onText: ({ text: t }) => { body.textContent = t; } }); return r.text; }
+      try { const r = await sample([{ role: "user", content: BRIEF + "\n\n（以上是助教須知，以下開始是學員的提問。）" }, { role: "assistant", content: "了解，請說。" }, ...msgs], { modelTier: "default", cache: false, onText: ({ text: t }) => { renderAns(body, t); } }); return r.text; }
       catch (e) { throw new Error(e && e.code === "rate_limited" ? "目前使用量較高，請稍後再試。" : e && e.code === "not_granted" ? "這個頁面尚未取得詢問 Claude 的同意，所以無法回答。" : "這次沒有成功取得回答，請再送出一次。"); }
     };
   } else gemInit();
