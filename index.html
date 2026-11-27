@@ -59,6 +59,14 @@ th{background:var(--head)}
 .tl blockquote{margin:8px 0;padding:10px 14px;border-left:0;background:var(--wash);border-radius:8px;font-size:18px}
 .tl blockquote::before{content:"講師的指令";display:block;font-weight:700;font-size:14px;color:var(--teal)}
 .tl p{margin:6px 0;font-size:18px}.tl .learn{color:var(--blue)}
+.light{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;padding:10px 14px;border:2px solid var(--line);border-radius:12px;background:#fff}
+.lamp{width:24px;height:24px;border-radius:50%;flex:none;opacity:.18;border:2px solid rgba(0,0,0,.15)}
+.lamp.r{background:#d1342f}.lamp.y{background:#f1b31c}.lamp.g{background:#1e9e57}
+.light[data-s="red"] .lamp.r,.light[data-s="yellow"] .lamp.y,.light[data-s="green"] .lamp.g{opacity:1;box-shadow:0 0 0 4px rgba(0,0,0,.06)}
+.light[data-s="red"]{border-color:#d1342f}.light[data-s="yellow"]{border-color:#f1b31c}.light[data-s="green"]{border-color:#1e9e57}
+#gstat{font-size:17px;font-weight:700;flex:1;min-width:180px}
+#gtest{padding:6px 14px;font-size:16px}
+svg .tlr{fill:#d1342f;opacity:.3}svg .tly{fill:#f1b31c;opacity:.3}svg .tlg{fill:#1e9e57}
 .cmd::before{content:"可直接複製的指令";display:block;font-weight:700;color:var(--blue);font-size:16px}
 .note{color:var(--muted);font-size:16px}
 ul.chk{padding-left:0;list-style:none;columns:2;column-gap:28px}
@@ -256,10 +264,10 @@ footer{margin-top:30px;color:var(--muted);font-size:16px}
         <details id="gguide" style="margin:10px 0"><summary style="cursor:pointer;font-weight:700;color:var(--blue)" id="gguidesum">第一次使用？看圖解步驟（約 3 分鐘）</summary><div id="gguidebody"></div></details>
         <b>第二步：貼上金鑰</b>
         <p class="note" id="keyhint" style="margin:4px 0"></p>
-        <div class="row" style="margin-top:4px"><input id="gkey" type="password" autocomplete="off" placeholder="貼上金鑰" style="font:inherit;flex:1;min-width:220px;padding:10px;border:2px solid var(--line);border-radius:10px"><button class="btn" id="gsave">儲存金鑰</button><button class="btn ghost" id="gdel">移除金鑰</button></div>
+        <div class="row" style="margin-top:4px"><input id="gkey" type="password" autocomplete="off" placeholder="貼上金鑰（例如以 AQ. 或 AIza 開頭）" style="font:inherit;flex:1;min-width:220px;padding:10px;border:2px solid var(--line);border-radius:10px"><button class="btn" id="gsave">儲存金鑰</button><button class="btn ghost" id="gdel">移除金鑰</button></div>
         <b style="display:block;margin-top:12px">第三步：選擇模型</b>
         <div class="row" style="margin-top:4px;align-items:center"><select id="gmodel" aria-label="模型" style="font:inherit;padding:8px;border:2px solid var(--line);border-radius:10px;min-width:300px"></select><span class="note" id="gcost"></span></div>
-        <p class="note" id="gstat" style="margin:8px 0 0"></p>
+        <div class="light" id="glight" role="status" aria-live="polite"><span class="lamp r"></span><span class="lamp y"></span><span class="lamp g"></span><span id="gstat">尚未輸入金鑰。</span><button class="btn ghost" id="gtest" type="button">測試連線</button></div>
         <p class="note" style="margin:6px 0 0">金鑰只存在這台裝置的瀏覽器，不會傳到本網站或講師。付費方案請先在各家後台設定每月花費上限；在公用電腦用完請按「移除金鑰」。</p>
       </div>
     </div>
@@ -594,11 +602,11 @@ FIG.gk3 = (() => {
 FIG.gk4 = (() => {
   let g = SV.r(0, 0, 1000, 400, "pane", 12);
   g += SV.r(150, 30, 700, 340, "win", 12) + SV.t(180, 76, "API key created", { anchor: "start", size: 23, bold: true });
-  g += SV.r(180, 104, 560, 50, "field", 6) + SV.t(196, 136, "AIza••••••••••••••••••••••••••••", { anchor: "start", size: 20 });
+  g += SV.r(180, 104, 560, 50, "field", 6) + SV.t(196, 136, "AQ.••••••••••••••••（或 AIza…）", { anchor: "start", size: 20 });
   g += SV.r(752, 104, 70, 50, "btn", 8) + SV.t(787, 129, "複製", { mid: true, size: 17, cls: "txw", bold: true }) + SV.n(838, 129, 6);
   g += SV.r(180, 180, 642, 120, "badb", 10) + SV.t(200, 216, "金鑰等於你的帳號額度：", { anchor: "start", size: 19, bold: true, cls: "txr" }) + SV.t(200, 250, "不要貼進簡報、截圖、群組或共用文件", { anchor: "start", size: 18 }) + SV.t(200, 282, "外流時回到金鑰清單按垃圾桶刪除，再建一把新的", { anchor: "start", size: 18 });
   g += SV.r(700, 314, 122, 44, "field", 8) + SV.t(761, 336, "Done", { mid: true, size: 18 });
-  return SV.svg(1000, 402, g, "圖 G4：金鑰建立完成，按複製（以 AIza 開頭的一長串文字）（示意圖）");
+  return SV.svg(1000, 402, g, "圖 G4：金鑰建立完成，按複製。金鑰是以 AQ. 或 AIza 開頭的一長串文字（示意圖）");
 })();
 FIG.gk5 = (() => {
   let g = SV.win(1000, 470, "jackyt345.github.io/claude-office-course/#ask", "");
@@ -608,7 +616,7 @@ FIG.gk5 = (() => {
   g += SV.r(60, 162, 560, 46, "hi", 8) + SV.t(76, 192, "在這裡貼上（Ctrl＋V）", { anchor: "start", size: 19, bold: true }) + SV.n(640, 185, 7);
   g += SV.r(664, 162, 130, 46, "btn", 8) + SV.t(729, 185, "儲存金鑰", { mid: true, size: 18, cls: "txw", bold: true }) + SV.n(814, 185, 8);
   g += SV.t(60, 248, "模型", { anchor: "start", size: 17, cls: "txm" }) + SV.r(110, 226, 300, 40, "field", 8) + SV.t(126, 252, "gemini-…-flash ▾", { anchor: "start", size: 18 });
-  g += SV.t(60, 310, "出現「已列出 N 個可用模型」就成功了；顯示「金鑰無效」請重新複製", { anchor: "start", size: 18, cls: "txa", bold: true });
+  g += `<circle cx="80" cy="304" r="13" class="tlr"/><circle cx="114" cy="304" r="13" class="tly"/><circle cx="148" cy="304" r="13" class="tlg"/>` + SV.t(176, 310, "綠燈＝連線成功；黃燈＝檢查中或有限制；紅燈＝金鑰無效", { anchor: "start", size: 18, cls: "txa", bold: true });
   g += SV.r(40, 366, 760, 70, "field", 8) + SV.t(56, 406, "輸入你的問題，例如：三家書店的退書報表怎麼合併？", { anchor: "start", size: 18, cls: "txm" });
   g += SV.r(820, 378, 140, 46, "btn", 8) + SV.t(890, 401, "送出問題", { mid: true, size: 18, cls: "txw", bold: true }) + SV.n(980, 401, 9);
   return SV.svg(1000, 472, g, "圖 G5：回到本網站的「問 AI 助教」，貼上金鑰、儲存、提問");
@@ -776,7 +784,7 @@ const LESSONS = [
 <tr><td>Claude</td><td>API 與訂閱分開計費，預先儲值</td><td>見上表價格；批次處理半價</td><td>正式工作與大量處理</td></tr></table>
 <p class="note">各家免費條件經常調整，以上依各官方說明頁整理，115 年 11 月 27 日查核。</p>
 <h3>申請 Gemini 免費金鑰：圖解五步驟</h3>
-<p>金鑰是一串以 AIza 開頭的文字，代表「用你的 Google 帳號額度呼叫 Gemini」。申請免費、不必綁信用卡，約 3 分鐘。</p>
+<p>金鑰是一串以 AQ. 或 AIza 開頭的文字，代表「用你的 Google 帳號額度呼叫 Gemini」。申請免費、不必綁信用卡，約 3 分鐘。</p>
 {{fig:gk1}}
 {{fig:gk2}}
 {{fig:gk3}}
@@ -785,7 +793,8 @@ const LESSONS = [
 <table><tr><th>狀況</th><th>處理</th></tr>
 <tr><td>找不到「Get API key」</td><td>直接在網址列輸入 aistudio.google.com/apikey</td></tr>
 <tr><td>要求選擇國家或同意條款</td><td>選台灣、勾選同意後繼續</td></tr>
-<tr><td>顯示「金鑰無效」</td><td>多半是沒有複製完整，回到金鑰清單重新複製</td></tr>
+<tr><td>紅燈：金鑰無效</td><td>多半是沒有複製完整或多了空白，回到金鑰清單重新複製</td></tr>
+<tr><td>黃燈：金鑰有效但模型無法使用</td><td>換一個模型再按「測試連線」；Pro 模型多半需要付費層</td></tr>
 <tr><td>顯示「已達免費層的使用上限」</td><td>免費層有每分鐘與每日上限，稍等或隔天再用</td></tr>
 <tr><td>金鑰不小心外流</td><td>回到金鑰清單把那把金鑰刪除，再建一把新的</td></tr></table>
 <p>金鑰絕對不能寫進公開網站的程式裡。本網站「問 AI 助教」的做法是讓每位使用者選擇方案並貼上自己的金鑰：免費可用 Gemini 免費層，付費可選 Gemini 付費層、Claude API 或 OpenAI API。金鑰只存在使用者自己的瀏覽器，網站本身不含任何金鑰，花費與額度也各自計算。付費方案記得先在各家後台設定每月花費上限。</p>
@@ -1233,7 +1242,7 @@ function askBubble(text) { const out = el("div", "msg t"), body = el("span", nul
 const PRICE = { "claude-haiku-5-5": [0.10, 0.50], "claude-sonnet-5-5": [2, 10], "claude-opus-5-5": [4, 20] };
 const BRIEF_TOK = Math.round(BRIEF.length * 1.1);
 const PROV = {
-  gemfree: { store: "cc_key_gemini", hint: "Gemini 金鑰以 AIza 開頭。還沒有？打開上方圖解，約 3 分鐘可申請完成。", guide: true },
+  gemfree: { store: "cc_key_gemini", hint: "Gemini 金鑰是以 AQ. 或 AIza 開頭的一長串文字。還沒有？打開上方圖解，約 3 分鐘可申請完成。", guide: true },
   gempaid: { store: "cc_key_gemini", hint: "與免費層是同一把 Gemini 金鑰；需先在 AI Studio 為該專案設定帳單，否則 Pro 模型會回報錯誤。", guide: true },
   claude: { store: "cc_key_claude", hint: "到 platform.claude.com → API keys 建立金鑰（以 sk-ant- 開頭）；需先在 Billing 儲值，建議關閉自動儲值。", guide: false },
   openai: { store: "cc_key_openai", hint: "到 platform.openai.com → API keys 建立金鑰（以 sk- 開頭）；需先在 Billing 儲值。", guide: false },
@@ -1245,7 +1254,7 @@ const gscore = (n) => { const v = parseFloat((n.match(/gemini-(\d+(?:\.\d+)?)/) 
 const API = {
   async models(p, key) {
     if (p === "gemfree" || p === "gempaid") {
-      const d = await jget("https://generativelanguage.googleapis.com/v1beta/models?pageSize=200&key=" + encodeURIComponent(key));
+      const d = await jget("https://generativelanguage.googleapis.com/v1beta/models?pageSize=200", { headers: { "x-goog-api-key": key } });
       const all = (d.models || []).filter((m) => (m.supportedGenerationMethods || []).includes("generateContent") && /gemini/i.test(m.name) && !/embedding|image|tts|audio|live|vision|robotics|computer/i.test(m.name)).map((m) => m.name.replace("models/", ""));
       const pick = p === "gemfree" ? all.filter((n) => /flash/.test(n)) : all.filter((n) => /pro/.test(n)).concat(all.filter((n) => /flash/.test(n) && !/lite/.test(n)));
       return pick.sort((x, y) => gscore(y) + (/pro/.test(y) ? 2 : 0) * (p === "gempaid") - gscore(x) - (/pro/.test(x) ? 2 : 0) * (p === "gempaid"));
@@ -1258,16 +1267,16 @@ const API = {
     const d = await jget("https://api.openai.com/v1/models", { headers: { Authorization: "Bearer " + key } });
     return (d.data || []).map((m) => m.id).filter((id) => /^(gpt-|o\d)/.test(id) && !/audio|realtime|image|tts|transcribe|search|embedding|instruct/.test(id)).sort().reverse();
   },
-  async ask(p, key, model, msgs) {
+  async ask(p, key, model, msgs, sys = BRIEF, maxOut = 1200) {
     if (p === "gemfree" || p === "gempaid") {
-      const d = await jget("https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(model) + ":generateContent?key=" + encodeURIComponent(key), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ systemInstruction: { parts: [{ text: BRIEF }] }, contents: msgs.map((m) => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content }] })) }) });
+      const d = await jget("https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(model) + ":generateContent", { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key }, body: JSON.stringify({ systemInstruction: { parts: [{ text: sys }] }, contents: msgs.map((m) => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content }] })) }) });
       return ((d.candidates || [])[0]?.content?.parts || []).map((x) => x.text || "").join("");
     }
     if (p === "claude") {
-      const d = await jget("https://api.anthropic.com/v1/messages", { method: "POST", headers: { "Content-Type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" }, body: JSON.stringify({ model, max_tokens: 1200, system: BRIEF, messages: msgs }) });
+      const d = await jget("https://api.anthropic.com/v1/messages", { method: "POST", headers: { "Content-Type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" }, body: JSON.stringify({ model, max_tokens: maxOut, system: sys, messages: msgs }) });
       return (d.content || []).filter((c) => c.type === "text").map((c) => c.text).join("");
     }
-    const d = await jget("https://api.openai.com/v1/chat/completions", { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + key }, body: JSON.stringify({ model, messages: [{ role: "system", content: BRIEF }, ...msgs] }) });
+    const d = await jget("https://api.openai.com/v1/chat/completions", { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + key }, body: JSON.stringify({ model, messages: [{ role: "system", content: sys }, ...msgs] }) });
     return ((d.choices || [])[0]?.message?.content) || "";
   },
 };
@@ -1283,28 +1292,38 @@ async function gemInit() {
   $("gguidebody").innerHTML = ["gk1", "gk2", "gk3", "gk4", "gk5"].map(figHTML).join("");
   const sel = $("gmodel"), stat = $("gstat");
   try { const sp = store.get("cc_prov", ""); const r = sp && document.querySelector('input[name="prov"][value="' + sp + '"]'); if (r) r.checked = true; } catch (e) {}
-  const refresh = async () => {
+  const light = (state, msg) => { $("glight").dataset.s = state; stat.textContent = msg; };
+  const testGen = async () => {
+    const p = prov(), k = getKey(p); if (!k || !sel.value) return;
+    light("yellow", "測試連線中：請 " + sel.value + " 回覆一句話…");
+    try { const r = await API.ask(p, k, sel.value, [{ role: "user", content: "請只回覆：OK" }], "你是連線測試，只回覆 OK。", 16);
+      light("green", "已連線：" + sel.value + " 回應正常" + (r ? "（" + r.trim().slice(0, 12) + "）" : "") + "，可以開始提問。"); }
+    catch (err) { light(/金鑰無效/.test(err.message) ? "red" : "yellow", (/金鑰無效/.test(err.message) ? "" : "金鑰有效，但這個模型目前無法使用：") + err.message + (/金鑰無效/.test(err.message) ? "" : "可換一個模型再按「測試連線」。")); }
+  };
+  const refresh = async (doTest) => {
     const p = prov(), k = getKey(p); store.set("cc_prov", p);
     $("keyhint").textContent = PROV[p].hint; $("gguide").hidden = !PROV[p].guide; if (PROV[p].guide && !k) $("gguide").open = true;
     sel.textContent = ""; $("gcost").textContent = "";
-    if (!k) { stat.textContent = "這個方案還沒有儲存金鑰。"; return; }
-    stat.textContent = "正在讀取可用的模型…";
+    if (!k) { light("red", "尚未輸入金鑰：請貼上金鑰後按「儲存金鑰」。"); return; }
+    light("yellow", "檢查金鑰中…");
     try {
       const ms = await API.models(p, k);
-      if (!ms.length) { stat.textContent = p === "gempaid" ? "這把金鑰目前沒有可用的 Pro 模型，請確認專案已設定帳單。" : "沒有找到可用的模型。"; return; }
+      if (!ms.length) { light("yellow", p === "gempaid" ? "金鑰有效，但沒有可用的 Pro 模型，請確認專案已設定帳單。" : "金鑰有效，但沒有找到可用的模型。"); return; }
       ms.forEach((m) => sel.append(new Option(m, m)));
       const saved = store.get("cc_model_" + p, ""); if (saved && ms.includes(saved)) sel.value = saved;
       if (p === "claude" && !saved) { const h = ms.find((m) => /haiku/.test(m)); if (h) sel.value = h; }
       $("gcost").textContent = costLine(p, sel.value);
-      stat.textContent = "金鑰已儲存在這台裝置，已列出 " + ms.length + " 個可用模型。";
-    } catch (err) { stat.textContent = err.message; }
+      light("green", "金鑰有效，已列出 " + ms.length + " 個可用模型。按「測試連線」可確認模型能回答。");
+      if (doTest) await testGen();
+    } catch (err) { light("red", err.message); }
   };
-  document.querySelectorAll('input[name="prov"]').forEach((r) => r.addEventListener("change", refresh));
-  $("gsave").addEventListener("click", () => { const v = $("gkey").value.trim(); if (!v) return; store.set(PROV[prov()].store, v); $("gkey").value = ""; refresh(); });
+  $("gtest").addEventListener("click", () => { if (sel.value) testGen(); else refresh(true); });
+  document.querySelectorAll('input[name="prov"]').forEach((r) => r.addEventListener("change", () => refresh(false)));
+  $("gsave").addEventListener("click", () => { const v = $("gkey").value.replace(/\s+/g, ""); if (!v) return; store.set(PROV[prov()].store, v); $("gkey").value = ""; refresh(true); });
   $("gdel").addEventListener("click", () => { const p = prov(); try { localStorage.removeItem(PROV[p].store); if (PROV[p].store === "cc_key_gemini") localStorage.removeItem("cc_gkey"); } catch (e) {} refresh(); });
-  sel.addEventListener("change", () => { store.set("cc_model_" + prov(), sel.value); $("gcost").textContent = costLine(prov(), sel.value); });
+  sel.addEventListener("change", () => { store.set("cc_model_" + prov(), sel.value); $("gcost").textContent = costLine(prov(), sel.value); light("yellow", "已換成 " + sel.value + "，按「測試連線」確認能回答。"); });
   askState.engine = async (msgs) => { const p = prov(), k = getKey(p); if (!k) throw new Error("請先貼上並儲存這個方案的金鑰。"); if (!sel.value) throw new Error("請先選擇模型。"); const ans = await API.ask(p, k, sel.value, msgs); return ans || "這次沒有取得回答，請再送出一次。"; };
-  refresh();
+  refresh(false);
 }
 $("askgo").addEventListener("click", async () => {
   const text = $("askq").value.trim(); if (!text || askState.busy || !askState.engine) return;
