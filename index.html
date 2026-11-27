@@ -46,6 +46,7 @@ th,td{border:1px solid #8f98a8;padding:7px 10px;text-align:left;vertical-align:t
 th{background:var(--head)}
 .tblwrap{overflow-x:auto}
 .cmd{border:2px solid var(--blue);border-radius:10px;padding:12px 16px;margin:12px 0;background:#f6f8fc;font-size:19px}
+.keybox{border:2px solid var(--teal);border-radius:10px;padding:12px 16px;margin:12px 0;background:#f4fafa;font-size:19px}
 .cmd::before{content:"可直接複製的指令";display:block;font-weight:700;color:var(--blue);font-size:16px}
 .note{color:var(--muted);font-size:16px}
 ul.chk{padding-left:0;list-style:none;columns:2;column-gap:28px}
@@ -159,14 +160,14 @@ footer{margin-top:30px;color:var(--muted);font-size:16px}
 <header>
   <h1>Claude 辦公室實戰互動課</h1>
   <p class="sub">瀏覽器、代 key、Excel 串接、連接器與 GitHub 網站建置</p>
-  <p class="by">講師 唐晨峰｜七個模組、核心 10 題＋延伸題庫 35 題｜資料已經是電子檔，就不要再手打一次</p>
+  <p class="by">講師 唐晨峰｜七個模組、核心 10 題＋延伸題庫 36 題｜資料已經是電子檔，就不要再手打一次</p>
 </header>
 
 <nav class="tabs" role="tablist" aria-label="模式">
   <button class="tab" role="tab" id="tab-read" data-v="read">課程講義</button>
   <button class="tab" role="tab" id="tab-learn" data-v="learn">對話練習</button>
   <button class="tab" role="tab" id="tab-exam" data-v="exam">模擬測驗</button>
-  <button class="tab" role="tab" id="tab-ask" data-v="ask" hidden>問 AI 助教</button>
+  <button class="tab" role="tab" id="tab-ask" data-v="ask">問 AI 助教</button>
 </nav>
 
 <section id="v-read" aria-labelledby="tab-read">
@@ -185,9 +186,9 @@ footer{margin-top:30px;color:var(--muted);font-size:16px}
   <div id="exam-start" class="card" style="max-width:760px">
     <p class="q">模擬測驗說明</p>
     <p><b>核心測驗</b>：精選 10 題，限時 20 分鐘，每題都要把兩個以上的觀念拼起來判斷，其中 3 題是綜合實例題。</p>
-    <p><b>延伸題庫</b>：其餘 35 題，限時 60 分鐘，依模組排列，適合課後複習。</p>
+    <p><b>延伸題庫</b>：其餘 36 題，限時 60 分鐘，依模組排列，適合課後複習。</p>
     <p>兩種測驗都可以用題號盤跳題、標記沒把握的題目；交卷後顯示分數、各模組答對率，並可逐題檢討，每題附各選項分析。</p>
-    <div class="row"><button class="btn" id="estart">開始核心測驗（10 題）</button><button class="btn ghost" id="estart2">開始延伸題庫（35 題）</button></div>
+    <div class="row"><button class="btn" id="estart">開始核心測驗（10 題）</button><button class="btn ghost" id="estart2">開始延伸題庫（36 題）</button></div>
   </div>
   <div id="exam-run" class="exam" hidden>
     <div class="card">
@@ -223,7 +224,21 @@ footer{margin-top:30px;color:var(--muted);font-size:16px}
 <section id="v-ask" aria-labelledby="tab-ask" hidden>
   <div class="card">
     <p class="q">問 AI 助教</p>
-    <p class="note">把工作上的情境打出來，助教會依本課程的做法回答。回答由 Claude 產生，請不要輸入真實的客戶資料、帳號或密碼。</p>
+    <p class="note" id="askmode">把工作上的情境打出來，助教會依本課程的做法回答。請不要輸入真實的客戶資料、帳號或密碼。</p>
+    <div id="gem" hidden>
+      <div class="keybox">
+        <b>使用自己的 Gemini 免費金鑰</b>
+        <ol style="margin:6px 0 8px;padding-left:1.3em">
+          <li>用 Google 帳號登入 <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>，按「Create API key」建立金鑰並複製。</li>
+          <li>貼到下方欄位，按「儲存金鑰」。金鑰只存在你這台裝置的瀏覽器，不會傳到本網站或講師。</li>
+          <li>免費層的內容會被 Google 用來改進產品，只能用練習資料提問；在公用電腦用完請按「移除金鑰」。</li>
+        </ol>
+        <label for="gkey" class="note">Gemini API 金鑰</label>
+        <div class="row" style="margin-top:4px"><input id="gkey" type="password" autocomplete="off" placeholder="貼上以 AIza 開頭的金鑰" style="font:inherit;flex:1;min-width:220px;padding:10px;border:2px solid var(--line);border-radius:10px"><button class="btn" id="gsave">儲存金鑰</button><button class="btn ghost" id="gdel">移除金鑰</button></div>
+        <div class="row" style="margin-top:8px;align-items:center"><label for="gmodel" class="note">模型</label><select id="gmodel" style="font:inherit;padding:8px;border:2px solid var(--line);border-radius:10px;min-width:260px"></select></div>
+        <p class="note" id="gstat" style="margin:8px 0 0"></p>
+      </div>
+    </div>
     <div class="chips" id="sugg" style="margin-top:10px"></div>
     <label for="askq" class="note">你的問題</label>
     <textarea id="askq" placeholder="例：我每個月要把三家書店的退書報表合在一起，該怎麼交代？"></textarea>
@@ -612,6 +627,15 @@ const LESSONS = [
 <tr><td>Claude Sonnet 5.5</td><td>2</td><td>10</td><td>寫作、表格整理、代 key</td></tr>
 <tr><td>Claude Opus 5.5</td><td>4</td><td>20</td><td>規劃、整合、複雜判斷</td></tr></table>
 <p class="note">單位：美元／每百萬 token。依 Claude 官方價格頁，115 年 11 月 25 日查核，價格可能調整。</p>
+<h3>其他廠商的 API：哪些可以免費用</h3>
+<table><tr><th>廠商</th><th>免費方式</th><th>限制與注意</th><th>適合</th></tr>
+<tr><td>Google Gemini</td><td>長期免費層，到 Google AI Studio 申請金鑰，不必綁信用卡</td><td>速率限制較低；免費層的內容會被用來改進 Google 產品，只能放練習用資料</td><td>課堂練習、本網站的 AI 助教</td></tr>
+<tr><td>Qwen（阿里雲百煉）</td><td>新用戶每個模型約 100 萬 token，開通後 90 天內有效</td><td>需完成實名驗證；額度用完自動轉按量付費，先開「Free quota only」才會自動停止</td><td>短期試用</td></tr>
+<tr><td>Qwen 開源版</td><td>下載到自己電腦執行（例如 Ollama），不收費</td><td>只能在那台電腦使用，速度看電腦效能；資料不離開電腦</td><td>處理敏感資料的離線摘要</td></tr>
+<tr><td>OpenAI</td><td>目前沒有長期免費額度</td><td>新帳號採預付制，先儲值才能呼叫</td><td>已有付費需求時</td></tr>
+<tr><td>Claude</td><td>API 與訂閱分開計費，預先儲值</td><td>見上表價格；批次處理半價</td><td>正式工作與大量處理</td></tr></table>
+<p class="note">各家免費條件經常調整，以上依各官方說明頁整理，115 年 11 月 27 日查核。</p>
+<p>金鑰絕對不能寫進公開網站的程式裡。本網站「問 AI 助教」的做法是讓每位使用者貼上自己的 Gemini 免費金鑰，金鑰只存在使用者自己的瀏覽器，網站本身不含任何金鑰，花費與額度也各自計算。</p>
 {{fig:cost}}
 <h3>驗收與安全</h3>
 {{fig:verify}}
@@ -842,6 +866,11 @@ const Q = [
 
 /* 新增題目（延伸題庫用） */
 const NEWQ = [
+{ m: 5, t: "免費 API 各有條件：Gemini 有長期免費層但資料會被用於改進產品；Qwen 新用戶額度限 90 天；OpenAI 需先儲值。",
+  q: "公司想讓同事試用 AI 自動整理「客戶來信」，不想花錢，打算用 Gemini 的免費 API 金鑰直接處理真實信件。這個做法最大的問題是？",
+  o: ["免費層完全不能處理中文", "免費層的內容會被 Google 用來改進產品，真實客戶資料不應送進去；正式使用應改用付費層，或先去識別", "免費金鑰一天只能用一次", "沒有問題，免費就是最好的選擇"], a: 1,
+  w: "Gemini 免費層適合練習與測試，但官方說明寫明免費層的提示與回覆會被用來改進 Google 產品，付費層則不會。客戶來信含姓名、電話與交易內容，屬於個資，應改用付費層並確認資料條款，或先把個資遮蔽後再處理。練習時用合成資料，就沒有這個顧慮。",
+  x: ["Gemini 可以處理中文，問題不在語言。", "正解。", "免費層有速率限制，但不是一天一次。", "免費的代價是資料用途，處理個資前一定要看條款。"] },
 { m: 4, t: "發布網頁分三個層級：Claude 成品頁面按分享最簡單；需要長期固定網址再用 GitHub Pages；連接 GitHub 讓 Claude 推送屬於進階設定。",
   q: "房仲秘書請 Claude 做好一個「本週精選物件」網頁，下午就要傳給三位客戶看，也沒有 GitHub 帳號。最適合的發布方式是？",
   o: ["在 Claude 的成品頁面按「分享」，複製連結傳給客戶", "先註冊 GitHub、建立 repository、上傳檔案、開啟 Pages", "把 GitHub 連到 Claude，設定 App 權限後請它推送", "把網頁截圖傳給客戶"], a: 0,
@@ -1044,21 +1073,64 @@ function drawTimeNoop(){}
 /* ---------- 問 AI 助教（只在 Claude 成品頁面中可用；GitHub 版本自動隱藏） ---------- */
 const BRIEF = "你是「Claude 辦公室實戰」課程的助教，學員是書籍出版公司主管、特別助理與不動產仲介公司秘書（兼管財務）。請用繁體中文、口語而精簡地回答，300 字以內，先給做法，再給一句可以直接複製的指令範例。課程原則：資料已是電子檔就不要再手打；資料經由連結資料夾、瀏覽器、連接器交給 Claude；指令五要素為目標、來源、格式、規則、授權；看不清楚的數字標黃不准猜；比對前先統一格式並附原始列號；代 key 先示範一筆、只存草稿、由本人送出；帳號密碼由本人輸入，網銀與付款不交給 AI；連接器讀取類可允許、寄出類每次詢問；網站分靜態（GitHub Pages）與有後台兩種，靜態網站收不到資料；公開 repository 不可放金鑰與個資；排程先手動三次再設定，對外寄送只起草；成果以數量、抽樣、追溯三層驗收。與課程無關的問題請婉拒並引導回辦公室應用。\n\n課程要點：\n" + Q.map((q) => "・" + q.w).join("\n");
 const SUGG = ["三家書店的退書報表格式都不同，要怎麼合併？", "屋主資料在 Excel，要怎麼登進物件後台？", "想做新書活動報名頁，要用 GitHub 嗎？"];
+const askState = { hist: [], busy: false, engine: null };
+SUGG.forEach((s) => { const c = el("button", "chip", s); c.type = "button"; c.addEventListener("click", () => { $("askq").value = s; $("askq").focus(); }); $("sugg").append(c); });
+function askBubble(text) { const out = el("div", "msg t"), body = el("span", null, text); out.append(el("b", "who", "AI 助教"), body); $("asklog").append(out); out.scrollIntoView({ behavior: "smooth", block: "nearest" }); return body; }
+/* Gemini 模式（GitHub 版） */
+const GEM = {
+  key: () => store.get("cc_gkey", ""),
+  async models(key) {
+    const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models?pageSize=200&key=" + encodeURIComponent(key));
+    if (!r.ok) throw new Error(r.status === 400 || r.status === 403 ? "金鑰無效，請確認是否完整複製。" : "無法取得模型清單（" + r.status + "）。");
+    const d = await r.json();
+    const list = (d.models || []).filter((m) => (m.supportedGenerationMethods || []).includes("generateContent") && /gemini/i.test(m.name) && !/embedding|image|tts|audio|live|vision/i.test(m.name)).map((m) => m.name.replace("models/", ""));
+    const score = (n) => { const v = parseFloat((n.match(/gemini-(\d+(?:\.\d+)?)/) || [0, 0])[1]); return v * 10 + (/flash/.test(n) ? 3 : 0) + (/lite/.test(n) ? -1 : 0) + (/preview|exp/.test(n) ? -5 : 0) + (/pro/.test(n) ? -2 : 0); };
+    return list.sort((x, y) => score(y) - score(x));
+  },
+  async ask(key, model, msgs) {
+    const body = { systemInstruction: { parts: [{ text: BRIEF }] }, contents: msgs.map((m) => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content }] })) };
+    const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(model) + ":generateContent?key=" + encodeURIComponent(key), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    if (r.status === 429) throw new Error("已達免費層的使用上限，請稍後再試，或明天再用。");
+    if (!r.ok) throw new Error("Gemini 回應錯誤（" + r.status + "），可換一個模型再試。");
+    const d = await r.json();
+    return ((d.candidates || [])[0]?.content?.parts || []).map((p) => p.text || "").join("") || "這次沒有取得回答，請再送出一次。";
+  },
+};
+async function gemInit() {
+  $("gem").hidden = false;
+  $("askmode").textContent = "這個網頁沒有內建 AI。貼上你自己的 Gemini 免費金鑰後就能提問，花費與額度都算在你自己的帳號。請不要輸入真實的客戶資料、帳號或密碼。";
+  const sel = $("gmodel"), stat = $("gstat");
+  const load = async () => {
+    const k = GEM.key(); sel.textContent = "";
+    if (!k) { stat.textContent = "尚未儲存金鑰。"; return; }
+    stat.textContent = "正在讀取可用的模型…";
+    try { const ms = await GEM.models(k); ms.forEach((m) => sel.append(new Option(m, m))); const saved = store.get("cc_gmodel", ""); if (saved && ms.includes(saved)) sel.value = saved; stat.textContent = "金鑰已儲存在這台裝置。已列出 " + ms.length + " 個可用模型，預設選最新的 Flash 模型。"; }
+    catch (err) { stat.textContent = err.message; }
+  };
+  $("gsave").addEventListener("click", () => { const v = $("gkey").value.trim(); if (!v) return; store.set("cc_gkey", v); $("gkey").value = ""; load(); });
+  $("gdel").addEventListener("click", () => { try { localStorage.removeItem("cc_gkey"); } catch (e) {} sel.textContent = ""; stat.textContent = "金鑰已從這台裝置移除。"; });
+  sel.addEventListener("change", () => store.set("cc_gmodel", sel.value));
+  askState.engine = async (msgs) => { const k = GEM.key(); if (!k) throw new Error("請先貼上並儲存你的 Gemini 金鑰。"); if (!sel.value) throw new Error("請先選擇模型。"); return GEM.ask(k, sel.value, msgs); };
+  load();
+}
+$("askgo").addEventListener("click", async () => {
+  const text = $("askq").value.trim(); if (!text || askState.busy || !askState.engine) return;
+  askState.busy = true; $("askgo").disabled = true;
+  $("asklog").append(el("div", "msg u", text)); const body = askBubble("思考中…"); $("askq").value = "";
+  const msgs = [...askState.hist.slice(-6), { role: "user", content: text }];
+  try { const ans = await askState.engine(msgs, body); body.textContent = ans; askState.hist.push({ role: "user", content: text }, { role: "assistant", content: ans }); }
+  catch (err) { body.textContent = err.message || "這次沒有成功取得回答，請再送出一次。"; }
+  askState.busy = false; $("askgo").disabled = false;
+});
 (async () => {
   let sample = null; try { if (window.claude && window.claude.use) sample = await window.claude.use("sample"); } catch (e) {}
-  if (!sample) return;
-  $("tab-ask").hidden = false; if (location.hash === "#ask") show("ask");
-  const log = $("asklog"), hist = []; let busy = false;
-  SUGG.forEach((s) => { const c = el("button", "chip", s); c.type = "button"; c.addEventListener("click", () => { $("askq").value = s; $("askq").focus(); }); $("sugg").append(c); });
-  $("askgo").addEventListener("click", async () => {
-    const text = $("askq").value.trim(); if (!text || busy) return; busy = true; $("askgo").disabled = true;
-    log.append(el("div", "msg u", text)); const out = el("div", "msg t"); const body = el("span", null, "思考中…"); out.append(el("b", "who", "AI 助教"), body); log.append(out);
-    $("askq").value = ""; out.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    const msgs = [{ role: "user", content: BRIEF + "\n\n（以上是助教須知，以下開始是學員的提問。）" }, { role: "assistant", content: "了解，請說。" }, ...hist.slice(-6), { role: "user", content: text }];
-    try { const r = await sample(msgs, { modelTier: "default", cache: false, onText: ({ text: t }) => { body.textContent = t; } }); body.textContent = r.text; hist.push({ role: "user", content: text }, { role: "assistant", content: r.text }); }
-    catch (e) { body.textContent = e && e.code === "rate_limited" ? "目前使用量較高，請稍後再試。" : e && e.code === "not_granted" ? "這個頁面尚未取得詢問 Claude 的同意，所以無法回答。" : "這次沒有成功取得回答，請再送出一次。"; }
-    busy = false; $("askgo").disabled = false;
-  });
+  if (sample) {
+    $("askmode").textContent = "這個版本由 Claude 回答。把工作上的情境打出來，助教會依本課程的做法回答。請不要輸入真實的客戶資料、帳號或密碼。";
+    askState.engine = async (msgs, body) => {
+      try { const r = await sample([{ role: "user", content: BRIEF + "\n\n（以上是助教須知，以下開始是學員的提問。）" }, { role: "assistant", content: "了解，請說。" }, ...msgs], { modelTier: "default", cache: false, onText: ({ text: t }) => { body.textContent = t; } }); return r.text; }
+      catch (e) { throw new Error(e && e.code === "rate_limited" ? "目前使用量較高，請稍後再試。" : e && e.code === "not_granted" ? "這個頁面尚未取得詢問 Claude 的同意，所以無法回答。" : "這次沒有成功取得回答，請再送出一次。"); }
+    };
+  } else gemInit();
 })();
 
 renderLearn(false); show(location.hash.slice(1) || "read");
